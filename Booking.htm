@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMD Rails - Booking & Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #10497e;
+            --primary-orange: #f37021;
+            --text-dark: #333;
+            --text-light: #777;
+            --bg-gray: #f4f6f9;
+            --border-color: #e0e0e0;
+            --success-green: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        header {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-container h2 {
+            color: var(--primary-blue);
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo-container h2 span {
+            color: var(--primary-orange);
+        }
+
+        .logo-container p {
+            font-size: 9px;
+            color: var(--text-light);
+            letter-spacing: 1px;
+            margin-top: -5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        nav a.active {
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-info i {
+            color: var(--primary-orange);
+        }
+
+        .ir-logo {
+            background: var(--primary-blue);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .ir-logo div:first-child {
+            font-size: 9px;
+        }
+
+        .ir-logo div:last-child {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .stepper-container {
+            background: #fff;
+            padding: 20px 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            padding-right: 15px;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .step.active .step-circle {
+            background: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(16, 73, 126, 0.2);
+        }
+
+        .step.completed .step-circle {
+            background: var(--success-green);
+        }
+
+        .step-text h4 {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .step-text p {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .step.active .step-text h4 {
+            color: var(--primary-blue);
+        }
+
+        .step.completed .step-text h4 {
+            color: var(--success-green);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+            display: grid;
+            grid-template-columns: 1fr 500px;
+            gap: 25px;
+        }
+
+        .train-info-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .train-img {
+            width: 180px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .train-number-badge {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background: var(--primary-orange);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .train-details {
+            flex: 1;
+        }
+
+        .train-details h2 {
+            font-size: 20px;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .train-route {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .train-timeline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-box h4 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .time-box p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .duration {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .duration span {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .line {
+            height: 2px;
+            background: #ddd;
+            margin-top: 5px;
+            position: relative;
+        }
+
+        .line::before,
+        .line::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-orange);
+            top: -3px;
+        }
+
+        .line::before {
+            left: 0;
+        }
+
+        .line::after {
+            right: 0;
+        }
+
+        .seat-avail {
+            background: #e8f5e9;
+            color: var(--success-green);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .seat-avail h4 {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .seat-avail p {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            color: var(--primary-blue);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .add-btn {
+            background: #e3f2fd;
+            color: var(--primary-blue);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #bbdefb;
+        }
+
+        .passenger-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .passenger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .passenger-title {
+            color: var(--primary-blue);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-btn {
+            background: #ffebee;
+            color: #d32f2f;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #ffcdd2;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .input-group label span {
+            color: #d32f2f;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-dark);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .input-error {
+            border-color: #d32f2f !important;
+            background-color: #fff8f8;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            color: #1565c0;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .info-box h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-box ul {
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 5px;
+        }
+
+        .fare-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .fare-card h3 {
+            color: var(--primary-blue);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .fare-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .fare-row span:last-child {
+            font-weight: 600;
+        }
+
+        .fare-row small {
+            display: block;
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed #ddd;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .total-row .amount {
+            color: var(--primary-orange);
+            font-size: 24px;
+        }
+
+        .save-banner {
+            background: #e8f5e9;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+            color: var(--success-green);
+        }
+
+        .save-banner i {
+            font-size: 20px;
+        }
+
+        .save-banner p {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .save-banner small {
+            font-size: 11px;
+            color: #555;
+        }
+
+        .payment-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .payment-card h3 {
+            color: var(--primary-blue);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .payment-layout {
+            display: flex;
+            gap: 20px;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .pm-btn {
+            padding: 12px 10px;
+            border: 1px solid #eee;
+            background: #f9f9f9;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            transition: 0.2s;
+        }
+
+        .pm-btn.active {
+            background: #e3f2fd;
+            border-color: #90caf9;
+            color: var(--primary-blue);
+        }
+
+        .pm-btn i {
+            width: 18px;
+            text-align: center;
+        }
+
+        .payment-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .payment-details {
+            display: none;
+        }
+
+        .payment-details.active {
+            display: block;
+        }
+
+        .payment-details h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+        }
+
+        .payment-details p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .qr-section {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .upi-apps {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .app-icon {
+            border: 1px solid #eee;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .upi-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .upi-input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            min-width: 0;
+        }
+
+        .upi-input-group button {
+            background: #fff;
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+            padding: 0 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .pay-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .pay-form-grid .input-group {
+            margin-bottom: 0;
+        }
+
+        .pay-form-grid .full-width {
+            grid-column: span 2;
+        }
+
+        .pay-form-grid input,
+        .pay-form-grid select {
+            padding: 10px 12px;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .terms input {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .terms a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .pay-btn {
+            width: 100%;
+            background: var(--primary-orange);
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .pay-btn:hover {
+            background: #d65f15;
+        }
+
+        .pay-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .secure-badge {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .secure-badge i {
+            color: var(--success-green);
+        }
+
+        @media (max-width: 1050px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .stepper-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h2>JMD <span>RAILS</span></h2>
+            <p>INDIAN RAILWAY RESERVATION SYSTEM</p>
+        </div>
+        <nav>
+            <a href="index.htm"><i class="fas fa-home"></i> Home</a>
+            <a href="index.htm" class="active"><i class="fas fa-train"></i> Book Ticket</a>
+            <a href="#"><i class="fas fa-search"></i> PNR Status</a>
+            <a href="#"><i class="fas fa-clock"></i> My Bookings</a>
+        </nav>
+        <div class="user-info" id="headerUserName">
+            <i class="fas fa-user"></i> Hi, User
+        </div>
+        <div class="ir-logo">
+            <div>भारतीय रेल</div>
+            <div>INDIAN RAILWAYS</div>
+        </div>
+    </header>
+
+    <div class="stepper-container">
+        <div class="stepper">
+            <div class="step active" id="step-1">
+                <div class="step-circle">1</div>
+                <div class="step-text">
+                    <h4>Passenger Details</h4>
+                    <p>Enter traveler information</p>
+                </div>
+            </div>
+            <div class="step" id="step-2">
+                <div class="step-circle" id="step-2-icon">2</div>
+                <div class="step-text">
+                    <h4>Confirming</h4>
+                    <p>Review & Payment</p>
+                </div>
+            </div>
+            <div class="step" id="step-3">
+                <div class="step-circle" id="step-3-icon">3</div>
+                <div class="step-text">
+                    <h4>Confirmed</h4>
+                    <p>Booking Successful</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="left-panel">
+            <div class="train-info-card">
+                <img src="https://images.unsplash.com/photo-1541417904950-b855846fe074?w=400&q=80" alt="Train"
+                    class="train-img">
+                <div class="train-number-badge" id="bookingTrainNumber">Loading...</div>
+                <div class="train-details">
+                    <h2 id="bookingTrainName">Loading Train Name...</h2>
+                    <p class="train-route" id="bookingTrainRoute">Loading Route...</p>
+                    <div class="train-timeline">
+                        <div class="time-box">
+                            <h4 id="bookingDepTime">--:--</h4>
+                            <p id="bookingSource">Source</p>
+                        </div>
+                        <div class="duration">
+                            <span>Journey Duration</span>
+                            <div class="line"></div>
+                            <span
+                                style="font-weight:600; color:var(--text-dark); margin-top: 5px; display:block;">Direct</span>
+                        </div>
+                        <div class="time-box" style="text-align: right;">
+                            <h4 id="bookingArrTime">--:--</h4>
+                            <p id="bookingDestination">Destination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="seat-avail">
+                    <i class="fas fa-chair" style="font-size: 18px; margin-bottom: 5px;"></i>
+                    <p>Total Seats</p>
+                    <h4 id="bookingSeats">--</h4>
+                    <p>Available</p>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <div>
+                    <h3><i class="fas fa-users"></i> Passenger Details</h3>
+                    <p>Enter details of all passengers</p>
+                </div>
+                <button class="add-btn" onclick="addPassenger()"><i class="fas fa-plus"></i> Add Passenger</button>
+            </div>
+
+            <div id="passengerContainer"></div>
+
+            <div class="info-box">
+                <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                <ul>
+                    <li>Please enter correct passenger details as per your ID proof.</li>
+                    <li>E-Ticket will be sent to your registered email and phone number.</li>
+                    <li>Carry a valid ID proof during your journey.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="fare-card">
+                <h3><i class="fas fa-rupee-sign"></i> Fare Summary</h3>
+
+                <div class="fare-row">
+                    <div>Ticket Fare (<span id="farePassengerCount">0</span> Adults)<small id="fareTicketBreakdown">₹
+                            890 × 0</small></div>
+                    <div id="fareTicketFare">₹ 0</div>
+                </div>
+                <div class="fare-row">
+                    <div>Reservation Charges<small id="fareReservationBreakdown">₹ 20 × 0</small></div>
+                    <div id="fareReservation">₹ 0</div>
+                </div>
+                <div class="fare-row">
+                    <div>Superfast Charges<small id="fareSuperfastBreakdown">₹ 30 × 0</small></div>
+                    <div id="fareSuperfast">₹ 0</div>
+                </div>
+                <div class="fare-row">
+                    <div>GST (5%)</div>
+                    <div id="fareGST">₹ 0</div>
+                </div>
+
+                <div class="total-row">
+                    <span>Total Amount</span>
+                    <span class="amount" id="fareTotalAmount">₹ 0</span>
+                </div>
+
+                <div class="save-banner">
+                    <i class="fas fa-tags"></i>
+                    <div>
+                        <p>Save More!</p>
+                        <small>Use UPI or Wallet for instant payment and faster booking.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-card">
+                <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+
+                <div class="payment-layout">
+                    <div class="payment-methods">
+                        <button class="pm-btn active" onclick="switchPayment('upi', this)"><i class="fas fa-bolt"
+                                style="color:var(--primary-orange);"></i> UPI</button>
+                        <button class="pm-btn" onclick="switchPayment('card', this)"><i class="fas fa-credit-card"></i>
+                            Card</button>
+                        <button class="pm-btn" onclick="switchPayment('netbanking', this)"><i
+                                class="fas fa-university"></i> Net Banking</button>
+                    </div>
+
+                    <div class="payment-content">
+                        <div id="upi-details" class="payment-details active">
+                            <h4>Pay using UPI</h4>
+                            <p>Scan QR Code or use UPI ID</p>
+                            <div class="qr-section">
+                                <div class="qr-code">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=jmdrails@upi"
+                                        alt="QR Code">
+                                </div>
+                                <div class="upi-apps">
+                                    <div class="app-icon" style="color: #4285F4;">GPay</div>
+                                    <div class="app-icon" style="color: #5f259f;">PhonePe</div>
+                                    <div class="app-icon" style="color: #00B9F1;">Paytm</div>
+                                    <div class="app-icon" style="color: #f37021;">BHIM</div>
+                                </div>
+                            </div>
+                            <div class="upi-input-group">
+                                <input type="text" value="jmdrails@upi" readonly>
+                                <button onclick="alert('UPI ID Copied!')">Copy</button>
+                            </div>
+                        </div>
+
+                        <div id="card-details" class="payment-details">
+                            <h4>Enter Card Details</h4>
+                            <p>We accept Visa, Mastercard, RuPay & Amex</p>
+                            <div class="pay-form-grid">
+                                <div class="input-group full-width">
+                                    <label>Card Number</label>
+                                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                                </div>
+                                <div class="input-group full-width">
+                                    <label>Name on Card</label>
+                                    <input type="text" placeholder="Enter name">
+                                </div>
+                                <div class="input-group">
+                                    <label>Expiry Date</label>
+                                    <input type="text" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="input-group">
+                                    <label>CVV</label>
+                                    <input type="password" placeholder="XXX" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="netbanking-details" class="payment-details">
+                            <h4>Net Banking</h4>
+                            <p>Select your bank to proceed</p>
+                            <div class="pay-form-grid">
+                                <div class="input-group full-width">
+                                    <label>Select Bank</label>
+                                    <select>
+                                        <option value="" disabled selected>Choose a bank</option>
+                                        <option>State Bank of India (SBI)</option>
+                                        <option>HDFC Bank</option>
+                                        <option>ICICI Bank</option>
+                                        <option>Axis Bank</option>
+                                        <option>Punjab National Bank (PNB)</option>
+                                        <option>Bank of Baroda</option>
+                                    </select>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label>Other Banks</label>
+                                    <select>
+                                        <option>Select if not listed above</option>
+                                        <option>Kotak Mahindra Bank</option>
+                                        <option>Yes Bank</option>
+                                        <option>IDFC First Bank</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" checked>
+                    <label>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Cancellation
+                            Policy</a></label>
+                </div>
+
+                <button class="pay-btn" id="payButton" onclick="processPayment()"><i class="fas fa-lock"></i> Pay ₹ 0
+                    and Confirm <i class="fas fa-arrow-right"></i></button>
+                <div class="secure-badge"><i class="fas fa-shield-alt"></i> 100% Secure Payment | Powered by
+                    Razorpay/UPI</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_FARE = 890;
+        const RESERVATION_CHARGE = 20;
+        const SUPERFAST_CHARGE = 30;
+        const GST_RATE = 0.05;
+
+        window.onload = function () {
+            addPassenger();
+        };
+
+        function switchPayment(method, btnElement) {
+            document.querySelectorAll('.pm-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            document.querySelectorAll('.payment-details').forEach(div => div.classList.remove('active'));
+            document.getElementById(method + '-details').classList.add('active');
+        }
+
+        function addPassenger() {
+            const container = document.getElementById('passengerContainer');
+            const newPassengerHTML = `
+                <div class="passenger-card">
+                    <div class="passenger-header">
+                        <div class="passenger-title"><i class="fas fa-user"></i> Passenger</div>
+                        <button class="remove-btn" onclick="removePassenger(this)"><i class="fas fa-times"></i> Remove</button>
+                    </div>
+                    <div class="form-grid">
+                        <div class="input-group"><label>Full Name <span>*</span></label><input type="text" class="req-input" placeholder="Enter full name"></div>
+                        <div class="input-group"><label>Age <span>*</span></label><input type="number" class="req-input" placeholder="Age" min="1" max="120"></div>
+                        <div class="input-group">
+                            <label>Gender <span>*</span></label>
+                            <select>
+                                <option value="" disabled selected>Select</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Berth Preference</label>
+                            <select>
+                                <option>No Preference</option>
+                                <option>Lower Berth</option>
+                                <option>Middle Berth</option>
+                                <option>Upper Berth</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="input-group">
+                            <label>ID Proof Type <span>*</span></label>
+                            <select>
+                                <option>Aadhaar Card</option>
+                                <option>PAN Card</option>
+                                <option>Passport</option>
+                            </select>
+                        </div>
+                        <div class="input-group"><label>ID Proof Number <span>*</span></label><input type="text" class="req-input" placeholder="Enter ID number"></div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', newPassengerHTML);
+            updatePassengerNumbersAndFare();
+        }
+
+        function removePassenger(button) {
+            const card = button.closest('.passenger-card');
+            card.remove();
+            updatePassengerNumbersAndFare();
+        }
+
+        function updatePassengerNumbersAndFare() {
+            const cards = document.querySelectorAll('.passenger-card');
+            const count = cards.length;
+
+            cards.forEach((card, index) => {
+                const title = card.querySelector('.passenger-title');
+                title.innerHTML = `<i class="fas fa-user"></i> Passenger ${index + 1}`;
+            });
+
+            calculateFare(count);
+        }
+
+        function calculateFare(count) {
+            const ticketFare = BASE_FARE * count;
+            const reservation = RESERVATION_CHARGE * count;
+            const superfast = SUPERFAST_CHARGE * count;
+
+            const subTotal = ticketFare + reservation + superfast;
+            const gst = Math.round(subTotal * GST_RATE);
+            const total = subTotal + gst;
+
+            const formatCurrency = (amount) => '₹ ' + amount.toLocaleString('en-IN');
+
+            document.getElementById('farePassengerCount').innerText = count;
+            document.getElementById('fareTicketBreakdown').innerText = `₹ ${BASE_FARE} × ${count}`;
+            document.getElementById('fareTicketFare').innerText = formatCurrency(ticketFare);
+            document.getElementById('fareReservationBreakdown').innerText = `₹ ${RESERVATION_CHARGE} × ${count}`;
+            document.getElementById('fareReservation').innerText = formatCurrency(reservation);
+            document.getElementById('fareSuperfastBreakdown').innerText = `₹ ${SUPERFAST_CHARGE} × ${count}`;
+            document.getElementById('fareSuperfast').innerText = formatCurrency(superfast);
+            document.getElementById('fareGST').innerText = formatCurrency(gst);
+            document.getElementById('fareTotalAmount').innerText = formatCurrency(total);
+            document.getElementById('payButton').innerHTML = `<i class="fas fa-lock"></i> Pay ${formatCurrency(total)} and Confirm <i class="fas fa-arrow-right"></i>`;
+        }
+
+        async function processPayment() {
+            const payBtn = document.getElementById('payButton');
+            const originalBtnText = payBtn.innerHTML;
+
+            let isValid = true;
+            const requiredInputs = document.querySelectorAll('.req-input');
+
+            requiredInputs.forEach(input => {
+                input.classList.remove('input-error');
+
+                if (!input.value.trim()) {
+                    input.classList.add('input-error');
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                alert("Kripya saari zaruri details (Red boxes) bharein!");
+                return;
+            }
+
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+
+            step1.classList.remove('active');
+            step1.classList.add('completed');
+            step1.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+
+            step2.classList.add('active');
+
+            payBtn.disabled = true;
+            payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
+
+            const trainDataString = localStorage.getItem('selectedTrainData');
+            const train = JSON.parse(trainDataString);
+            const passengerCards = document.querySelectorAll('.passenger-card');
+            const passengersData = [];
+
+            passengerCards.forEach(card => {
+                const name = card.querySelector('input[placeholder="Enter full name"]').value;
+                const age = card.querySelector('input[placeholder="Age"]').value;
+                const gender = card.querySelectorAll('select')[0].value;
+                const berth = card.querySelectorAll('select')[1].value;
+                const idType = card.querySelectorAll('select')[2].value;
+                const idNumber = card.querySelector('input[placeholder="Enter ID number"]').value;
+
+                passengersData.push({ name, age, gender, berth, id_type: idType, id_number: idNumber });
+            });
+
+            const totalAmount = parseInt(document.getElementById('fareTotalAmount').innerText.replace(/[₹,]/g, '').trim());
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/confirm_booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        train_number: train.train_number,
+                        passengers: passengersData,
+                        total_amount: totalAmount,
+                        payment_method: "UPI"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === "success") {
+                    step2.classList.remove('active');
+                    step2.classList.add('completed');
+                    step2.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+
+                    const step3 = document.getElementById('step-3');
+                    step3.classList.add('active');
+                    step3.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+
+                    payBtn.style.background = "#28a745";
+                    payBtn.innerHTML = `<i class="fas fa-check-circle"></i> Booking Confirmed (PNR: ${data.pnr})`;
+
+                    alert(`🎉 Booking Successful!\nAapka PNR hai: ${data.pnr}`);
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("❌ Payment Failed: " + error.message);
+
+                step2.classList.remove('active');
+                step1.classList.add('active');
+                step1.classList.remove('completed');
+                step1.querySelector('.step-circle').innerHTML = '1';
+
+                payBtn.disabled = false;
+                payBtn.innerHTML = originalBtnText;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('userName');
+            if (savedName) {
+                document.getElementById('headerUserName').innerHTML = `<i class="fas fa-user"></i> Hi, <b>${savedName}</b>`;
+            }
+
+            const trainDataString = localStorage.getItem('selectedTrainData');
+            if (trainDataString) {
+                const train = JSON.parse(trainDataString);
+                document.getElementById('bookingTrainName').innerText = train.train_name;
+                document.getElementById('bookingTrainNumber').innerText = train.train_number;
+                document.getElementById('bookingTrainRoute').innerText = `${train.source} ➔ ${train.destination}`;
+                document.getElementById('bookingDepTime').innerText = train.dep_time;
+                document.getElementById('bookingArrTime').innerText = train.arr_time;
+                document.getElementById('bookingSource').innerText = train.source;
+                document.getElementById('bookingDestination').innerText = train.destination;
+                document.getElementById('bookingSeats').innerText = train.total_seats;
+            } else {
+                alert("Kripya pehle train search karein aur 'Book Now' par click karein!");
+                window.location.href = 'index.htm';
+            }
+        });
+    </script>
+</body>
+
+</html>

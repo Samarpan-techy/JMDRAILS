@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMD Rails - Indian Railway Reservation System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #10497e;
+            --primary-orange: #f37021;
+            --text-dark: #333;
+            --text-light: #777;
+            --bg-gray: #f4f6f9;
+            --border-color: #e0e0e0;
+            --error-red: #d32f2f;
+            --success-green: #28a745;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+        }
+        header {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        nav a.active {
+            color: var(--primary-blue);
+            border-bottom: 3px solid var(--primary-blue);
+        }
+        nav a:hover {
+            color: var(--primary-blue);
+        }
+        .ir-logo {
+            text-align: right;
+            background: var(--primary-blue);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        .hero {
+            position: relative;
+            background: linear-gradient(to right, rgba(10, 53, 96, 0.9), rgba(10, 53, 96, 0.4)), url('https://images.unsplash.com/photo-1541417904950-b855846fe074?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            min-height: 60vh;
+        }
+        .search-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .search-tabs {
+            display: flex;
+            background: var(--bg-gray);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-light);
+            border-radius: 8px;
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        .tab.active {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .input-box {
+            flex: 1;
+        }
+        .input-box label {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            background: #fff;
+        }
+        .input-wrapper i {
+            color: var(--text-light);
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .input-wrapper input,
+        .input-wrapper select {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .swap-btn {
+            background: #e3f2fd;
+            color: var(--primary-blue);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .search-btn {
+            width: 100%;
+            background: var(--primary-orange);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .search-btn:hover {
+            background: #d65f15;
+        }
+        .hero-content {
+            color: #fff;
+            flex: 1;
+            padding-top: 20px;
+        }
+        .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .hero-content h1 span {
+            color: var(--primary-orange);
+        }
+        .hero-content p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .features-grid {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .feature-item {
+            background: #fff;
+            color: var(--text-dark);
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px 15px;
+        }
+        .section-title h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title h2 i {
+            color: var(--primary-blue);
+        }
+        .routes-container {
+            display: flex;
+            gap: 20px;
+            padding: 0 40px;
+            overflow-x: auto;
+        }
+        .route-card {
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            gap: 15px;
+            min-width: 280px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        .route-card img {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .route-info h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+        .route-info h4 i {
+            color: var(--primary-orange);
+            margin: 0 5px;
+            font-size: 12px;
+        }
+        .route-info p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+        .modal-content {
+            background: #fff;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideDown 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .close-btn:hover {
+            color: var(--error-red);
+        }
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .auth-tab.active {
+            color: var(--primary-blue);
+            border-bottom: 3px solid var(--primary-blue);
+        }
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .auth-form.active {
+            display: flex;
+        }
+        .auth-form h2 {
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .auth-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .auth-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(16, 73, 126, 0.2);
+        }
+        .auth-input.invalid {
+            border-color: var(--error-red);
+            background-color: #fff8f8;
+        }
+        .error-msg {
+            color: var(--error-red);
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+        .auth-submit {
+            background: var(--primary-orange);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .auth-submit:hover {
+            background: #d65f15;
+        }
+        #myBookingsModal .modal-content {
+            max-width: 800px;
+            padding: 0;
+            overflow: hidden;
+        }
+        .mb-header {
+            background: var(--primary-blue);
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mb-header h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .mb-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(85vh - 60px);
+            background: #f4f6f9;
+        }
+        .booking-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .b-card-header {
+            background: #f9f9f9;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 13px;
+        }
+        .b-card-body {
+            padding: 15px;
+        }
+        .b-train-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .b-train-info h3 {
+            color: var(--primary-blue);
+            font-size: 16px;
+        }
+        .b-train-info p {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .b-passengers {
+            background: #f4f6f9;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .b-passengers span {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        .status-badge {
+            background: #e8f5e9;
+            color: var(--success-green);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        #searchResults {
+            display: none;
+            padding: 20px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .train-card {
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .train-img-box {
+            position: relative;
+            width: 150px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+        .train-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .train-number-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: var(--primary-orange);
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .train-details {
+            flex: 1;
+            min-width: 200px;
+        }
+        .train-details h3 {
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        .train-route {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .train-tags {
+            display: flex;
+            gap: 10px;
+        }
+        .train-tags span {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .tag-superfast {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .tag-reserved {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        .train-timeline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            justify-content: center;
+            min-width: 250px;
+        }
+        .time-box {
+            text-align: center;
+        }
+        .time-box h4 {
+            color: var(--text-dark);
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        .time-box p {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .duration-line {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .duration-line span {
+            font-size: 11px;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 5px;
+        }
+        .line-graphic {
+            height: 2px;
+            background: #ddd;
+            width: 100%;
+            position: relative;
+        }
+        .line-graphic::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-orange);
+        }
+        .train-pricing {
+            text-align: right;
+        }
+        .book-btn {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .book-btn:hover {
+            background: #d65f15;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <h2 style="color: var(--primary-blue); font-size: 28px; font-weight: 800; letter-spacing: -1px;">JMD <span style="color: var(--primary-orange);">RAILS</span></h2>
+            <span style="font-size: 10px; color: var(--text-light); margin-top: 15px;">INDIAN RAILWAY RESERVATION SYSTEM</span>
+        </div>
+        <nav>
+            <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+            <a href="#"><i class="fas fa-train"></i> Book Ticket</a>
+            <a href="pnr.html"><i class="fas fa-search"></i> PNR Status</a>
+            <a href="#" onclick="openMyBookings(event)"><i class="fas fa-clock"></i> My Bookings</a>
+            <a href="#" id="loginBtn" onclick="handleAuthClick(event)"><i class="fas fa-user"></i> <span id="authText">Login/Sign Up</span></a>
+        </nav>
+        <div class="ir-logo">
+            <div style="font-size: 10px; text-align: center;">भारतीय रेल</div>
+            <div style="font-size: 14px; font-weight: bold;">INDIAN RAILWAYS</div>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="search-box">
+            <div class="search-tabs">
+                <div class="tab active"><i class="fas fa-train"></i> Book Ticket</div>
+                <a href="pnr.html" class="tab"><i class="fas fa-search"></i> PNR Status</a>
+                <a href="#" class="tab" onclick="openMyBookings(event)"><i class="fas fa-list"></i> My Bookings</a>
+            </div>
+            <div class="form-group">
+                <div class="input-box">
+                    <label>From</label>
+                    <div class="input-wrapper"><i class="fas fa-map-marker-alt"></i><input type="text" id="fromStation" value="New Delhi (NDLS)"></div>
+                </div>
+                <button class="swap-btn"><i class="fas fa-exchange-alt"></i></button>
+                <div class="input-box">
+                    <label>To</label>
+                    <div class="input-wrapper"><i class="fas fa-map-marker-alt"></i><input type="text" id="toStation" value="Chandigarh (CDG)"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-box">
+                    <label>Journey Date</label>
+                    <div class="input-wrapper"><i class="far fa-calendar-alt"></i><input type="date" id="journeyDate" value="2026-10-25"></div>
+                </div>
+                <div class="input-box">
+                    <label>Class</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-bed"></i>
+                        <select id="travelClass">
+                            <option>Sleeper (SL)</option>
+                            <option>AC 3 Tier (3A)</option>
+                            <option>AC 2 Tier (2A)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search Trains</button>
+        </div>
+        <div class="hero-content">
+            <h1>JMD <span>Rails</span></h1>
+            <p>Your Journey, Our Priority</p>
+            <div style="font-size: 16px; margin-bottom: 30px;"><span style="margin: 0 10px;">Safe</span> | <span style="margin: 0 10px;">Comfortable</span> | <span style="margin: 0 10px;">Reliable</span></div>
+            <h2 style="font-family: cursive; color: #fff; font-size: 32px; opacity: 0.8;">Safar Aapka <br> Saath Hamara...</h2>
+            <div class="features-grid">
+                <div class="feature-item"><i class="fas fa-ticket-alt" style="color: #2196f3;"></i> Easy Booking</div>
+                <div class="feature-item"><i class="fas fa-shield-alt" style="color: #4caf50;"></i> Secure Payments</div>
+                <div class="feature-item"><i class="fas fa-chair" style="color: #ff9800;"></i> Real-time Availability</div>
+                <div class="feature-item"><i class="fas fa-clock" style="color: #9c27b0;"></i> PNR Tracking</div>
+            </div>
+        </div>
+    </section>
+    <div id="searchResults"></div>
+    <div class="section-title">
+        <h2><i class="fas fa-train"></i> Popular Train Routes</h2>
+        <a href="#" style="color: var(--primary-blue); text-decoration: none; font-size: 14px;">View All Routes <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="routes-container" style="margin-bottom: 40px;">
+        <div class="route-card">
+            <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=200&h=150&fit=crop" alt="Delhi">
+            <div class="route-info">
+                <h4>New Delhi <i class="fas fa-arrow-right"></i> Chandigarh</h4>
+                <p>120+ Trains</p>
+            </div>
+        </div>
+        <div class="route-card">
+            <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=200&h=150&fit=crop" alt="Ambala">
+            <div class="route-info">
+                <h4>New Delhi <i class="fas fa-arrow-right"></i> Ambala</h4>
+                <p>80+ Trains</p>
+            </div>
+        </div>
+        <div class="route-card">
+            <img src="https://images.unsplash.com/photo-1566837945700-30057527ade0?w=200&h=150&fit=crop" alt="Jammu">
+            <div class="route-info">
+                <h4>Chandigarh <i class="fas fa-arrow-right"></i> Jammu</h4>
+                <p>60+ Trains</p>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLoginBtn" onclick="switchTab('login')">Login</button>
+                <button class="auth-tab" id="tabRegisterBtn" onclick="switchTab('register')">Register</button>
+            </div>
+            <form class="auth-form active" id="loginForm">
+                <h2>Welcome Back</h2>
+                <div class="input-group"><input type="email" id="loginEmail" class="auth-input" placeholder="Email Address" required></div>
+                <div class="input-group"><input type="password" id="loginPassword" class="auth-input" placeholder="Password" required></div>
+                <a href="#" style="font-size: 12px; color: var(--primary-blue); text-align: right; margin-top: -5px;">Forgot Password?</a>
+                <button type="submit" class="auth-submit">Login</button>
+            </form>
+            <form class="auth-form" id="registerForm">
+                <h2>Create an Account</h2>
+                <div class="input-group"><input type="text" id="regName" class="auth-input" placeholder="Full Name"><span class="error-msg" id="nameError">Name is required.</span></div>
+                <div class="input-group"><input type="text" id="regEmail" class="auth-input" placeholder="Email Address"><span class="error-msg" id="emailError">Enter a valid email.</span></div>
+                <div class="input-group"><input type="text" id="regMobile" class="auth-input" placeholder="Mobile Number"><span class="error-msg" id="mobileError">Enter valid 10-digit number.</span></div>
+                <div class="input-group"><input type="password" id="regPassword" class="auth-input" placeholder="Create Password"><span class="error-msg" id="passwordError">Password rules not met.</span></div>
+                <button type="submit" class="auth-submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="myBookingsModal">
+        <div class="modal-content">
+            <div class="mb-header">
+                <h2><i class="fas fa-ticket-alt"></i> My Bookings</h2>
+                <span class="close-btn" onclick="document.getElementById('myBookingsModal').style.display='none'">&times;</span>
+            </div>
+            <div class="mb-body" id="myBookingsBody"></div>
+        </div>
+    </div>
+    <script>
+        const modal = document.getElementById("authModal");
+        const closeBtn = document.getElementById("closeModal");
+        const bookingsModal = document.getElementById("myBookingsModal");
+        function handleAuthClick(e) {
+            if (e) e.preventDefault();
+            const savedName = localStorage.getItem('userName');
+            if (savedName) {
+                if (confirm(`Hello ${savedName}, kya aap logout karna chahte hain?`)) {
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('userEmail');
+                    updateHeaderName(null);
+                }
+            } else {
+                modal.style.display = "flex";
+            }
+        }
+        function updateHeaderName(name) {
+            const authText = document.getElementById('authText');
+            if (name) {
+                authText.innerHTML = `Hi, <b>${name}</b>`;
+                authText.style.color = "var(--primary-orange)";
+            } else {
+                authText.innerHTML = `Login/Sign Up`;
+                authText.style.color = "";
+            }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('userName');
+            if (savedName) updateHeaderName(savedName);
+        });
+        closeBtn.addEventListener("click", () => modal.style.display = "none");
+        window.addEventListener("click", (e) => {
+            if (e.target === modal) modal.style.display = "none";
+            if (e.target === bookingsModal) bookingsModal.style.display = "none";
+        });
+        function switchTab(tab) {
+            const tabLogin = document.getElementById('tabLoginBtn');
+            const tabRegister = document.getElementById('tabRegisterBtn');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            if (tab === 'login') {
+                tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+                loginForm.classList.add('active'); registerForm.classList.remove('active');
+            } else {
+                tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+                registerForm.classList.add('active'); loginForm.classList.remove('active');
+            }
+        }
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            try {
+                const response = await fetch('http://127.0.0.1:5000/login', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                const data = await response.json();
+                if (response.ok && data.status === "success") {
+                    alert(`🎉 Welcome back, ${data.name}!`);
+                    localStorage.setItem('userName', data.name);
+                    localStorage.setItem('userEmail', email);
+                    updateHeaderName(data.name);
+                    document.getElementById('loginForm').reset();
+                    modal.style.display = 'none';
+                } else { alert("❌ Error: " + data.message); }
+            } catch (error) { alert("⚠️ Server se connect nahi ho paya."); }
+        });
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            let isValid = true;
+            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.auth-input').forEach(el => el.classList.remove('invalid'));
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const password = document.getElementById('regPassword').value;
+            if (name === '') { showError('regName', 'nameError', 'Full name is required.'); isValid = false; }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) { showError('regEmail', 'emailError', 'Please enter a valid email.'); isValid = false; }
+            if (mobile.length < 10 || isNaN(mobile)) { showError('regMobile', 'mobileError', 'Please enter a valid 10-digit mobile.'); isValid = false; }
+            let passwordErrorMsg = "";
+            if (password.length < 9) { passwordErrorMsg = "Password must be at least 9 characters long."; }
+            else if (!/[A-Z]/.test(password)) { passwordErrorMsg = "Must contain at least one uppercase letter."; }
+            else if (!/[a-z]/.test(password)) { passwordErrorMsg = "Must contain at least one lowercase letter."; }
+            else if (!/^[A-Za-z]{3}/.test(password)) { passwordErrorMsg = "First 3 characters must be letters."; }
+            else if (!/[\d!@#$%^&*(),.?":{}|<>]/.test(password)) { passwordErrorMsg = "Must contain at least one number or symbol."; }
+            if (passwordErrorMsg !== "") { showError('regPassword', 'passwordError', passwordErrorMsg); isValid = false; }
+            if (isValid) {
+                const userData = { full_name: name, email: email, mobile: mobile, password: password };
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/register', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(userData)
+                    });
+                    const data = await response.json();
+                    if (data.message === "Registration Successful!") {
+                        alert("🎉 Registration Successful!"); document.getElementById('registerForm').reset(); switchTab('login');
+                    } else { alert("❌ Error: " + data.message); }
+                } catch (error) { alert("⚠️ Backend server se connect nahi ho paya."); }
+            }
+        });
+        function showError(inputId, errorId, message) {
+            document.getElementById(inputId).classList.add('invalid');
+            const el = document.getElementById(errorId); el.innerText = message; el.style.display = 'block';
+        }
+        async function openMyBookings(e) {
+            if (e) e.preventDefault();
+            const userEmail = localStorage.getItem('userEmail');
+            if (!userEmail) {
+                alert("Kripya pehle login karein!");
+                modal.style.display = "flex";
+                return;
+            }
+            bookingsModal.style.display = "flex";
+            const body = document.getElementById('myBookingsBody');
+            body.innerHTML = `<div style="text-align:center; padding: 30px;"><i class="fas fa-spinner fa-spin" style="font-size:30px; color:var(--primary-blue);"></i><h3 style="margin-top:15px;">Loading your bookings...</h3></div>`;
+            try {
+                const response = await fetch('http://127.0.0.1:5000/my_bookings', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_email: userEmail })
+                });
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    if (data.bookings.length === 0) {
+                        body.innerHTML = `<div style="text-align:center; padding: 30px;"><i class="fas fa-ticket-alt" style="font-size:40px; color:#ccc; margin-bottom:10px;"></i><h3>No Bookings Found</h3><p>Aapne abhi tak koi train ticket book nahi kiya hai.</p></div>`;
+                    } else {
+                        let html = '';
+                        data.bookings.forEach(b => {
+                            let passengersHTML = b.passengers.map(p => `<span><i class="fas fa-user"></i> ${p.name} (${p.age}, ${p.gender})</span>`).join('');
+                            html += `
+                                <div class="booking-card">
+                                    <div class="b-card-header">
+                                        <span><b>PNR:</b> ${b.pnr} | <b>Booked:</b> ${b.booking_date}</span>
+                                        <span class="status-badge"><i class="fas fa-check-circle"></i> ${b.status}</span>
+                                    </div>
+                                    <div class="b-card-body">
+                                        <div class="b-train-info">
+                                            <div>
+                                                <h3>${b.train_name} (${b.train_number})</h3>
+                                                <p>${b.source} ➔ ${b.destination}</p>
+                                            </div>
+                                            <div style="text-align:right;">
+                                                <p style="font-size:11px;">Journey Date</p>
+                                                <h4 style="font-size:14px;">${b.journey_date}</h4>
+                                            </div>
+                                        </div>
+                                        <div style="font-size:12px; margin-bottom:10px; font-weight:600; color:var(--primary-blue);">
+                                            Dep: ${b.dep_time} &nbsp;|&nbsp; Arr: ${b.arr_time}
+                                        </div>
+                                        <div class="b-passengers">
+                                            <b>Passengers:</b><br> ${passengersHTML}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        body.innerHTML = html;
+                    }
+                } else {
+                    body.innerHTML = `<h3 style="color:red; text-align:center;">Error: ${data.message}</h3>`;
+                }
+            } catch (error) {
+                body.innerHTML = `<h3 style="color:red; text-align:center;">Server se connect nahi ho paya.</h3>`;
+            }
+        }
+        let globalFetchedTrains = [];
+        document.getElementById('searchBtn').addEventListener('click', async function (e) {
+            e.preventDefault();
+            const fromInput = document.getElementById('fromStation').value;
+            const toInput = document.getElementById('toStation').value;
+            const journeyDate = document.getElementById('journeyDate').value;
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `<h3 style="text-align:center; color:#f37021; margin-top:50px;"><i class="fas fa-spinner fa-spin"></i> Searching for trains...</h3>`;
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            try {
+                const response = await fetch('http://127.0.0.1:5000/search_trains', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ from_station: fromInput, to_station: toInput, journey_date: journeyDate })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    if (data.trains.length === 0) {
+                        resultsDiv.innerHTML = `<h3 style="text-align:center; color:red; margin-top:50px;">Sorry, is route ke liye koi train nahi mili!</h3>`;
+                    } else {
+                        globalFetchedTrains = data.trains;
+                        let html = `<div style="margin-bottom: 20px;"><h2 style="color: #10497e; display:flex; align-items:center; gap:10px;"><i class="fas fa-train"></i> Available Trains</h2><p style="color: #666; font-size: 14px;">${fromInput} ➔ ${toInput} | ${data.trains.length} Trains Found</p></div>`;
+                        data.trains.forEach((train, index) => {
+                            html += `
+                                <div class="train-card">
+                                    <div class="train-img-box"><img src="https://images.unsplash.com/photo-1541417904950-b855846fe074?w=200&h=150&fit=crop" alt="Train"><div class="train-number-badge">${train.train_number}</div></div>
+                                    <div class="train-details"><h3>${train.train_name}</h3><p class="train-route">${train.source} ➔ ${train.destination}</p><div class="train-tags"><span class="tag-superfast">Express</span><span class="tag-reserved">Total Seats: ${train.total_seats}</span></div></div>
+                                    <div class="train-timeline">
+                                        <div class="time-box"><h4>${train.dep_time}</h4><p>${train.source}</p></div>
+                                        <div class="duration-line"><span>Journey</span><div class="line-graphic"></div></div>
+                                        <div class="time-box"><h4>${train.arr_time}</h4><p>${train.destination}</p></div>
+                                    </div>
+                                    <div class="train-pricing"><button class="book-btn" onclick="bookTrain(${index})">Book Now</button></div>
+                                </div>`;
+                        });
+                        resultsDiv.innerHTML = html;
+                    }
+                } else { resultsDiv.innerHTML = `<h3 style="color:red; text-align:center;">Error: ${data.message}</h3>`; }
+            } catch (error) { resultsDiv.innerHTML = `<h3 style="color:red; text-align:center;">Server se connect nahi ho paya.</h3>`; }
+        });
+        function bookTrain(index) {
+            const selectedTrain = globalFetchedTrains[index];
+            localStorage.setItem('selectedTrainData', JSON.stringify(selectedTrain));
+            window.location.href = 'Booking.htm';
+        }
+    </script>
+</body>
+</html>

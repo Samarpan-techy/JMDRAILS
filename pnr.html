@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JMD Rails - PNR Status</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root { --primary-blue: #10497e; --primary-orange: #f37021; --text-dark: #333; --text-light: #777; --bg-gray: #f4f6f9; --border-color: #e0e0e0; --success-green: #28a745; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { background-color: var(--bg-gray); color: var(--text-dark); font-size: 14px; }
+header { background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+.logo-container h2 { color: var(--primary-blue); font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+.logo-container h2 span { color: var(--primary-orange); }
+.logo-container p { font-size: 9px; color: var(--text-light); letter-spacing: 1px; margin-top: -5px; }
+nav { display: flex; gap: 30px; }
+nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+nav a.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); padding-bottom: 5px; }
+.user-info { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-dark); }
+.user-info i { color: var(--primary-orange); }
+.ir-logo { background: var(--primary-blue); color: #fff; padding: 5px 15px; border-radius: 5px; text-align: center; }
+.ir-logo div:first-child { font-size: 9px; }
+.ir-logo div:last-child { font-size: 12px; font-weight: bold; }
+.hero { position: relative; background: linear-gradient(to right, rgba(10, 53, 96, 0.9), rgba(10, 53, 96, 0.6)), url('https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center; padding: 50px 40px; color: #fff; }
+.hero-content { max-width: 900px; margin: 0 auto; }
+.hero h1 { font-size: 38px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; font-weight: 700; }
+.hero h1 i { font-size: 40px; }
+.hero p { font-size: 16px; opacity: 0.9; margin-bottom: 30px; margin-left: 55px; }
+.search-box { background: #fff; border-radius: 12px; padding: 20px; display: flex; gap: 15px; align-items: flex-end; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.input-group { flex: 1; display: flex; flex-direction: column; }
+.input-group label { color: var(--text-dark); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.input-wrapper { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px 15px; background: #fff; }
+.input-wrapper i { color: var(--text-light); margin-right: 10px; }
+.input-wrapper input { border: none; outline: none; width: 100%; font-size: 15px; color: var(--text-dark); }
+.search-btn { background: var(--primary-blue); color: #fff; border: none; padding: 14px 30px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+.search-btn:hover { background: #0a3560; }
+.container { max-width: 1100px; margin: -20px auto 40px; padding: 0 20px; position: relative; z-index: 10; display: none; }
+.result-card { background: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+.top-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+.pnr-info { display: flex; align-items: center; gap: 15px; }
+.status-icon { width: 45px; height: 45px; border-radius: 50%; background: #e8f5e9; color: var(--success-green); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.pnr-text h3 { font-size: 20px; color: var(--primary-blue); display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
+.pnr-text h3 i { font-size: 14px; color: #999; cursor: pointer; }
+.badges { display: flex; gap: 10px; align-items: center; }
+.badge-confirmed { background: var(--success-green); color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+.chart-text { font-size: 12px; color: var(--text-light); }
+.update-info { display: flex; align-items: center; gap: 15px; }
+.update-box { background: #e3f2fd; padding: 8px 15px; border-radius: 8px; font-size: 11px; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
+.update-box i { color: var(--primary-blue); font-size: 16px; }
+.refresh-btn { width: 35px; height: 35px; border-radius: 6px; border: 1px solid #eee; background: #fff; color: var(--primary-blue); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.train-info-row { padding: 20px; display: flex; align-items: center; gap: 25px; border-bottom: 1px solid #eee; }
+.train-img-box { position: relative; width: 140px; height: 90px; flex-shrink: 0; }
+.train-img-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.train-number { position: absolute; top: 5px; left: 5px; background: var(--primary-orange); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+.train-details { flex: 1; }
+.train-details h2 { color: var(--primary-blue); font-size: 20px; margin-bottom: 5px; }
+.route { color: var(--text-light); font-size: 13px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+.route i { color: var(--text-light); font-size: 10px; }
+.tags { display: flex; gap: 10px; }
+.tag { padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag-blue { background: #e3f2fd; color: #1976d2; }
+.tag-green { background: #e8f5e9; color: var(--success-green); }
+.timeline-area { display: flex; align-items: center; gap: 20px; padding: 0 20px; border-left: 1px solid #eee; border-right: 1px solid #eee; }
+.time-box { text-align: center; }
+.time-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.time-box p { font-size: 12px; color: var(--text-light); }
+.duration-line { display: flex; flex-direction: column; align-items: center; width: 120px; }
+.duration-line span { font-size: 11px; color: var(--text-light); margin-bottom: 5px; }
+.line-graphic { width: 100%; height: 2px; background: #f37021; position: relative; margin-bottom: 5px; }
+.line-graphic::before, .line-graphic::after { content: ''; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #f37021; top: -3px; }
+.line-graphic::before { left: 0; }
+.line-graphic::after { right: 0; }
+.duration-line strong { font-size: 13px; color: var(--text-dark); }
+.journey-date-box { background: #f9f9f9; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; margin-left: 10px; }
+.journey-date-box i { font-size: 24px; color: var(--primary-blue); }
+.journey-date-box div p { font-size: 11px; color: var(--text-light); }
+.journey-date-box div h4 { font-size: 14px; color: var(--text-dark); }
+.details-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 20px; border-bottom: 1px solid #eee; }
+.detail-item { background: #f9f9f9; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
+.detail-item i { font-size: 20px; color: var(--primary-blue); width: 25px; text-align: center; }
+.detail-text p { font-size: 11px; color: var(--text-light); margin-bottom: 2px; }
+.detail-text h4 { font-size: 15px; color: var(--text-dark); font-weight: 600; }
+.status-cnf { color: var(--success-green); }
+.table-container { padding: 20px; }
+.table-title { font-size: 18px; color: var(--primary-blue); font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #f4f6f9; padding: 12px 15px; text-align: left; font-size: 13px; color: var(--text-dark); font-weight: 600; border-bottom: 1px solid #eee; }
+td { padding: 12px 15px; font-size: 14px; border-bottom: 1px solid #eee; color: var(--text-dark); }
+.cnf-badge { background: #e8f5e9; color: var(--success-green); padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.footer-note { background: #e3f2fd; padding: 15px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 10px; color: #1565c0; font-size: 13px; }
+.footer-note i { margin-top: 3px; }
+@media (max-width: 992px) { .train-info-row { flex-wrap: wrap; } .timeline-area { border: none; padding: 20px 0; width: 100%; justify-content: space-between; border-top: 1px solid #eee; } .details-grid { grid-template-columns: repeat(2, 1fr); } .table-container { overflow-x: auto; } }
+</style>
+</head>
+<body>
+<header>
+<div class="logo-container"><h2>JMD <span>RAILS</span></h2><p>INDIAN RAILWAY RESERVATION SYSTEM</p></div>
+<nav>
+<a href="index.htm"><i class="fas fa-home"></i> Home</a>
+<a href="index.htm"><i class="fas fa-train"></i> Book Ticket</a>
+<a href="pnr.html" class="active"><i class="fas fa-search"></i> PNR Status</a>
+</nav>
+<div class="user-info" id="headerUserName"><i class="fas fa-user"></i> Hi, User</div>
+<div class="ir-logo"><div>भारतीय रेल</div><div>INDIAN RAILWAYS</div></div>
+</header>
+<section class="hero">
+<div class="hero-content">
+<h1><i class="fas fa-train"></i> Check <span style="color: var(--primary-orange);">PNR</span> Status</h1>
+<p>Get the latest status of your train ticket</p>
+<div class="search-box">
+<div class="input-group">
+<label>Enter 10-digit PNR Number</label>
+<div class="input-wrapper">
+<i class="fas fa-ticket-alt"></i>
+<input type="text" id="pnrInput" placeholder="e.g. 5879409425" maxlength="10">
+</div>
+</div>
+<button class="search-btn" id="checkPnrBtn" onclick="fetchPNRStatus()"><i class="fas fa-search"></i> Check Status</button>
+</div>
+</div>
+</section>
+<div class="container" id="resultContainer">
+<div class="result-card">
+<div class="top-bar">
+<div class="pnr-info">
+<div class="status-icon"><i class="fas fa-check-circle"></i></div>
+<div class="pnr-text">
+<h3>PNR: <span id="displayPnr">...</span> <i class="far fa-copy"></i></h3>
+<div class="badges">
+<span class="badge-confirmed" id="displayStatus">CONFIRMED</span>
+<span class="chart-text">Chart Prepared</span>
+</div>
+</div>
+</div>
+<div class="update-info">
+<div class="update-box">
+<i class="fas fa-history"></i>
+<div>
+<div style="font-weight: 500;">Last Updated</div>
+<div id="displayUpdateTime">Just Now</div>
+</div>
+</div>
+<button class="refresh-btn" onclick="fetchPNRStatus()"><i class="fas fa-sync-alt"></i></button>
+</div>
+</div>
+<div class="train-info-row">
+<div class="train-img-box">
+<img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=200&auto=format&fit=crop" alt="Train">
+<span class="train-number" id="displayTrainNumber">...</span>
+</div>
+<div class="train-details">
+<h2 id="displayTrainName">Loading...</h2>
+<p class="route" id="displayRoute">...</p>
+<div class="tags"><span class="tag tag-blue">Express</span><span class="tag tag-green">Sleeper (SL)</span></div>
+</div>
+<div class="timeline-area">
+<div class="time-box"><h3 id="displayDepTime">--:--</h3><p id="displaySource">NDLS</p></div>
+<div class="duration-line"><span>Journey Duration</span><div class="line-graphic"></div><strong>Direct</strong></div>
+<div class="time-box"><h3 id="displayArrTime">--:--</h3><p id="displayDest">SVDK</p></div>
+</div>
+<div class="journey-date-box">
+<i class="far fa-calendar-alt"></i>
+<div><p>Journey Date</p><h4 id="displayJourneyDate">...</h4></div>
+</div>
+</div>
+<div class="details-grid">
+<div class="detail-item"><i class="fas fa-train"></i><div class="detail-text"><p>Coach</p><h4 id="displayCoach">--</h4></div></div>
+<div class="detail-item"><i class="fas fa-chair"></i><div class="detail-text"><p>Seat Number</p><h4 id="displaySeat">--</h4></div></div>
+<div class="detail-item"><i class="fas fa-bed"></i><div class="detail-text"><p>Berth Type</p><h4 id="displayBerth">--</h4></div></div>
+<div class="detail-item"><i class="fas fa-user"></i><div class="detail-text"><p>Passenger Status</p><h4 class="status-cnf" id="displayPassengerStatus">CNF</h4></div></div>
+<div class="detail-item"><i class="fas fa-file-alt"></i><div class="detail-text"><p>Chart Status</p><h4 class="status-cnf">Prepared</h4></div></div>
+</div>
+<div class="table-container">
+<h3 class="table-title"><i class="fas fa-users"></i> Passenger Status</h3>
+<table>
+<thead>
+<tr><th>#</th><th>Passenger Name</th><th>Age</th><th>Gender</th><th>Booking Status</th><th>Current Status</th><th>Coach</th><th>Seat</th><th>Berth</th></tr>
+</thead>
+<tbody id="passengerTableBody"></tbody>
+</table>
+</div>
+</div>
+<div class="footer-note"><i class="fas fa-info-circle"></i><p>Real-time PNR status is connected to your database.</p></div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const savedName = localStorage.getItem('userName');
+if (savedName) document.getElementById('headerUserName').innerHTML = `<i class="fas fa-user"></i> Hi, <b>${savedName}</b>`;
+});
+async function fetchPNRStatus() {
+const pnr = document.getElementById('pnrInput').value.trim();
+const btn = document.getElementById('checkPnrBtn');
+const resultContainer = document.getElementById('resultContainer');
+if (pnr.length !== 10 || isNaN(pnr)) { alert("Kripya 10 digit ka sahi PNR number daalein!"); return; }
+const originalBtnText = btn.innerHTML;
+btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+btn.disabled = true;
+try {
+const response = await fetch('http://127.0.0.1:5000/check_pnr', {
+method: 'POST', headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ pnr_number: pnr })
+});
+const result = await response.json();
+if (response.ok && result.status === 'success') {
+const data = result.data;
+resultContainer.style.display = 'block';
+document.getElementById('displayPnr').innerText = data.pnr;
+document.getElementById('displayStatus').innerText = data.status.toUpperCase();
+document.getElementById('displayUpdateTime').innerText = new Date().toLocaleString();
+document.getElementById('displayTrainNumber').innerText = data.train_number;
+document.getElementById('displayTrainName').innerText = data.train_name;
+document.getElementById('displayRoute').innerHTML = `${data.source} <i class="fas fa-arrow-right"></i> ${data.destination}`;
+document.getElementById('displayDepTime').innerText = data.dep_time;
+document.getElementById('displayArrTime').innerText = data.arr_time;
+document.getElementById('displaySource').innerText = data.source;
+document.getElementById('displayDest').innerText = data.destination;
+document.getElementById('displayJourneyDate').innerText = data.journey_date;
+const tbody = document.getElementById('passengerTableBody');
+tbody.innerHTML = '';
+data.passengers.forEach((p, index) => {
+let seatStr = p.seat;
+let coach = "N/A";
+let seatNum = "N/A";
+if (seatStr && seatStr !== "N/A") {
+const parts = seatStr.split('-');
+coach = parts[0] || "N/A";
+seatNum = parts[1] || "N/A";
+}
+if (index === 0) {
+document.getElementById('displayCoach').innerText = coach;
+document.getElementById('displaySeat').innerText = seatNum;
+document.getElementById('displayBerth').innerText = p.berth;
+document.getElementById('displayPassengerStatus').innerText = `CNF / ${coach} / ${seatNum}`;
+}
+tbody.innerHTML += `
+<tr>
+<td>${index + 1}</td>
+<td>${p.name}</td>
+<td>${p.age}</td>
+<td>${p.gender}</td>
+<td>CNF</td>
+<td><span class="cnf-badge">CNF</span></td>
+<td>${coach}</td>
+<td>${seatNum}</td>
+<td>${p.berth}</td>
+</tr>
+`;
+});
+} else {
+alert("❌ Error: " + result.message);
+resultContainer.style.display = 'none';
+}
+} catch (error) {
+alert("⚠️ Server se connect nahi ho paya.");
+resultContainer.style.display = 'none';
+} finally {
+btn.innerHTML = originalBtnText;
+btn.disabled = false;
+}
+}
+</script>
+</body>
+</html>
